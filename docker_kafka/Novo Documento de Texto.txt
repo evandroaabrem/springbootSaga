@@ -1,0 +1,50 @@
+docker exec -it docker-kafka-1 bash
+
+kafka-topics --bootstrap-server localhost:9092 \
+--create --topic transferencia-iniciada --partitions 3 --replication-factor 1
+
+kafka-topics --bootstrap-server localhost:9092 \
+--create --topic debito-comando --partitions 3 --replication-factor 1
+
+kafka-topics --bootstrap-server localhost:9092 \
+--create --topic debito-realizado --partitions 3 --replication-factor 1
+
+kafka-topics --bootstrap-server localhost:9092 \
+--create --topic credito-comando --partitions 3 --replication-factor 1
+
+kafka-topics --bootstrap-server localhost:9092 \
+--create --topic credito-realizado --partitions 3 --replication-factor 1
+
+kafka-topics --bootstrap-server localhost:9092 \
+--create --topic transferencia-falhou --partitions 3 --replication-factor 1
+
+kafka-topics --bootstrap-server localhost:9092 \
+--create --topic estorno-comando --partitions 3 --replication-factor 1
+
+kafka-topics --bootstrap-server localhost:9092 \
+--create --topic transferencia-finalizada --partitions 3 --replication-factor 1
+
+*******************Validar tópicos
+
+kafka-topics --bootstrap-server localhost:9092 --list
+
+
+🧪 Teste rápido (opcional, mas recomendado)
+
+Produzir uma mensagem manual:
+
+kafka-console-producer --bootstrap-server localhost:9092 \
+--topic transferencia-iniciada
+
+
+Digite algo e pressione ENTER.
+
+Em outro terminal:
+
+kafka-console-consumer --bootstrap-server localhost:9092 \
+--topic transferencia-iniciada --from-beginning
+
+
+Se aparecer → Kafka está OK.
+
+
