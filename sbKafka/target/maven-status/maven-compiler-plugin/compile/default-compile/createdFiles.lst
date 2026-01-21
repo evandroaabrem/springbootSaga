@@ -1,0 +1,7 @@
+com\example\sbkafka\dto\PedidoDTO.class
+com\example\sbkafka\kafka\ProducerService.class
+com\example\sbkafka\model\Pedido.class
+com\example\sbkafka\controller\PedidoController.class
+com\example\sbkafka\SbKafkaApplication.class
+com\example\sbkafka\repository\PedidoRepository.class
+com\example\sbkafka\service\PedidoService.class
