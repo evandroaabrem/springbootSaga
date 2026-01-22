@@ -7,7 +7,7 @@ docker compose up -d
 
 
 
-docker exec -it docker-kafka-1 bash
+docker exec -it kafka bash
 
 kafka-topics --bootstrap-server localhost:9092 \
 --create --topic transferencia-iniciada --partitions 3 --replication-factor 1

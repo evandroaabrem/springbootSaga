@@ -26,10 +26,9 @@ spring:
       ack-mode: record
 
   datasource:
-    # URL com currentSchema para definir schema padrão na conexão
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=saga
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/saga_db
+    username: saga_user
+    password: saga_pass
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

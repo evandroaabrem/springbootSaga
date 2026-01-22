@@ -15,13 +15,14 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.26/lombok-1.18.26.jar" />
         </processorPath>
-        <module name="sbKafka" />
+        <module name="sbkafka" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="sbKafka" options="-parameters" />
+      <module name="sbkafka" options="-parameters" />
     </option>
   </component>
 </project>
