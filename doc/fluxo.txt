@@ -1,0 +1,259 @@
+Arquitetura Final da SAGA (Kafka + Retry + DLT)
+🎯 Objetivo da arquitetura
+
+Garantir:
+
+Consistência eventual
+
+Idempotência
+
+Reprocessamento seguro
+
+Compensação controlada
+
+Observabilidade
+
+Sem depender de transações distribuídas.
+
+🏗️ Visão Geral (macro)
+┌──────────────┐
+│ API / REST   │
+│ Transferência│
+└──────┬───────┘
+       │
+       ▼
+┌──────────────────────────┐
+│ SagaOrchestratorService  │
+│ (estado + decisão)       │
+└──────┬───────────────────┘
+       │ publica
+       ▼
+┌──────────────────────────┐
+│ Kafka Topics (comandos)  │
+└──────┬───────────────────┘
+       │
+       ▼
+┌──────────────────────────┐
+│ Listeners de Domínio     │
+│ (Débito / Crédito)       │
+└──────┬───────────────────┘
+       │ sucesso / falha
+       ▼
+┌──────────────────────────┐
+│ Kafka Topics (eventos)   │
+└──────┬───────────────────┘
+       │
+       ▼
+┌──────────────────────────┐
+│ SagaOrchestratorService  │
+│ (próximo passo)          │
+└──────────────────────────┘
+
+🔁 Fluxo completo da transferência
+1️⃣ Início da SAGA
+POST /transferencias
+
+
+Ações:
+
+Gera transactionId
+
+Persiste SAGA como INICIADA
+
+Publica evento:
+
+transferencia-iniciada
+
+2️⃣ Orquestrador inicia o débito
+SagaOrchestrator
+  └──> debito-comando
+
+
+📌 O orquestrador não executa lógica de negócio, apenas decide o fluxo.
+
+3️⃣ Débito (com retry e DLT)
+@KafkaListener("debito-comando")
+@RetryableTopic(...)
+
+
+Fluxo:
+
+Tenta debitar
+
+Atualiza status → DEBITADA
+
+Publica:
+
+debito-realizado
+
+
+❌ Se falhar após retries:
+
+debito-comando-DLT
+
+4️⃣ DLT de débito (compensação)
+@KafkaListener("debito-comando-DLT")
+
+
+Ações:
+
+Atualiza status → FALHOU
+
+Publica:
+
+estorno-comando
+
+5️⃣ Crédito
+@KafkaListener("credito-comando")
+
+
+Fluxo:
+
+Credita conta destino
+
+Atualiza status → CREDITADA
+
+Publica:
+
+credito-realizado
+
+
+❌ Falha:
+
+credito-comando-DLT
+
+6️⃣ Compensação de crédito
+@KafkaListener("credito-comando-DLT")
+
+
+Ações:
+
+Atualiza status → COMPENSANDO
+
+Publica:
+
+estorno-comando
+
+7️⃣ Finalização
+transferencia-finalizada
+
+
+ou
+
+transferencia-falhou
+
+
+Status final:
+
+✅ FINALIZADA
+
+❌ CANCELADA
+
+🧠 Componentes e responsabilidades
+SagaOrchestratorService
+
+Responsável por:
+
+Validar estado atual
+
+Decidir próximo passo
+
+Publicar comandos
+
+🚫 Não executa débito/crédito
+🚫 Não acessa banco de contas
+
+Listeners de domínio
+Classe	Função
+DebitoListener	Executa débito
+CreditoListener	Executa crédito
+EstornoListener	Executa estorno
+DebitoDltListener	Compensação
+CreditoDltListener	Compensação
+SagaTransferenciaService
+
+Responsável por:
+
+Atualizar estado com status esperado
+
+Garantir idempotência
+
+Registrar histórico
+
+boolean atualizarStatusSeEsperado(
+    txId,
+    statusEsperado,
+    novoStatus
+);
+
+🗃️ Modelo de dados recomendado
+Tabela principal
+saga_transferencia
+- transaction_id (PK)
+- status_atual
+- created_at
+- updated_at
+
+Histórico
+saga_transferencia_historico
+- id
+- transaction_id
+- status
+- origem_evento
+- erro
+- created_at
+
+📦 Tópicos Kafka (padrão final)
+Comandos
+transferencia-iniciada
+debito-comando
+credito-comando
+estorno-comando
+
+Eventos
+debito-realizado
+credito-realizado
+transferencia-finalizada
+
+Retry / DLT
+debito-comando-retry-2000
+debito-comando-retry-4000
+debito-comando-DLT
+
+credito-comando-retry-2000
+credito-comando-retry-4000
+credito-comando-DLT
+
+🛡️ Regras de ouro (produção)
+
+✔ Toda mudança de status valida o estado anterior
+✔ DLT não é erro, é fluxo de negócio
+✔ Mensagens nunca são apagadas
+✔ Offset ≠ processamento concluído
+✔ Compensação também é idempotente
+
+🧪 Como isso se comporta em falhas reais
+Cenário	Resultado
+Kafka cai	Reprocessa
+App reinicia	Continua
+Mensagem duplicada	Ignorada
+Débito falha	Compensa
+Crédito falha	Compensa
+🧭 Próximo passo recomendado
+
+Agora você tem arquitetura pronta.
+O próximo passo ideal é refatorar o código para refletir isso.
+
+👉 Posso:
+
+Refatorar suas classes (nomes + responsabilidades)
+
+Criar o SagaOrchestrator completo
+
+Criar endpoint de reprocessamento
+
+Criar diagrama visual (ASCII ou explicativo)
+
+Simular um caos real (falhas)
+
+Qual você quer seguir agora?

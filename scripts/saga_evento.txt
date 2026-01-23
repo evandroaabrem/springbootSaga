@@ -1,0 +1,26 @@
+CREATE TABLE saga_evento (
+    id              BIGSERIAL PRIMARY KEY,
+    transaction_id  VARCHAR(64)  NOT NULL,
+    tipo_evento     VARCHAR(50)  NOT NULL,
+    status_origem   VARCHAR(30),
+    status_destino  VARCHAR(30),
+    payload         JSONB        NOT NULL,
+    erro            TEXT,
+    created_at      TIMESTAMPTZ  NOT NULL DEFAULT now()
+);
+
+-- Busca principal por transação (replay / auditoria)
+CREATE INDEX idx_saga_evento_transaction
+    ON saga_evento (transaction_id);
+
+-- Linha do tempo ordenada
+CREATE INDEX idx_saga_evento_transaction_created
+    ON saga_evento (transaction_id, created_at);
+
+-- Auditoria por tipo de evento
+CREATE INDEX idx_saga_evento_tipo_evento
+    ON saga_evento (tipo_evento);
+
+-- Análise de falhas
+CREATE INDEX idx_saga_evento_status_destino
+    ON saga_evento (status_destino);

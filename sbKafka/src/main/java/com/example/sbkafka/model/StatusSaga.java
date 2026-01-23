@@ -6,5 +6,8 @@ public enum StatusSaga {
     CREDITADA,
     FINALIZADA,
     FALHOU,
-    COMPENSADAsSaga
+    COMPENSADAsSaga,
+    EM_PROCESSAMENTO,
+    COMPENSANDO,
+    CONCLUIDA
 }

@@ -2,6 +2,7 @@ package com.example.sbkafka.model;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ import java.time.Instant;
 @Entity
 @Table(
         name = "saga_transferencia",
-        schema = "saga",
+        schema = "public",
         uniqueConstraints = @UniqueConstraint(
                 name = "uk_transaction_id",
                 columnNames = "transaction_id"
@@ -19,6 +20,7 @@ import java.time.Instant;
 )
 @NoArgsConstructor
 @Setter
+@Getter
 public class SagaTransferencia {
 
     @Id

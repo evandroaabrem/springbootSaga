@@ -33,6 +33,46 @@ kafka-topics --bootstrap-server localhost:9092 \
 kafka-topics --bootstrap-server localhost:9092 \
 --create --topic transferencia-finalizada --partitions 3 --replication-factor 1
 
+BOOTSTRAP_SERVER=localhost:29092
+PARTITIONS=3
+REPLICATION_FACTOR=1
+
+echo "🔧 Criando tópicos da SAGA de débito..."
+
+# -----------------------------
+# RETRY 1 (2s)
+# -----------------------------
+kafka-topics \
+  --bootstrap-server $BOOTSTRAP_SERVER \
+  --create --if-not-exists \
+  --topic debito-comando-retry-2000 \
+  --partitions $PARTITIONS \
+  --replication-factor $REPLICATION_FACTOR
+  
+  
+# -----------------------------
+# RETRY 2 (4s)
+# -----------------------------
+kafka-topics \
+  --bootstrap-server $BOOTSTRAP_SERVER \
+  --create --if-not-exists \
+  --topic debito-comando-retry-4000 \
+  --partitions $PARTITIONS \
+  --replication-factor $REPLICATION_FACTOR  
+  
+# -----------------------------
+# DEAD LETTER TOPIC (DLT)
+# -----------------------------
+kafka-topics \
+  --bootstrap-server $BOOTSTRAP_SERVER \
+  --create --if-not-exists \
+  --topic debito-comando-DLT \
+  --partitions $PARTITIONS \
+  --replication-factor $REPLICATION_FACTOR  
+  
+
+
+
 *******************Validar tópicos
 
 kafka-topics --bootstrap-server localhost:9092 --list
