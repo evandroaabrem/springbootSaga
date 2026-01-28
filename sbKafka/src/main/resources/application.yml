@@ -3,7 +3,20 @@ server:
 
 spring:
   application:
-    name: saga-financeira
+    name: lp
+  profiles:
+    active: dev
+  config:
+    import:
+        - optional:configserver:http://localhost:8888
+        - aws-secretsmanager:lp-dev
+
+  cloud:
+    aws:
+      region:
+        static: us-east-2
+
+
 
   kafka:
     bootstrap-servers: host.docker.internal:9092
@@ -29,11 +42,7 @@ spring:
     listener:
       ack-mode: record
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/saga_db
-    username: saga_user
-    password: saga_pass
-    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -48,3 +57,9 @@ spring:
 app:
   kafka:
     topic: pedidos-topic
+
+
+logging:
+  level:
+    io.awspring.cloud.secretsmanager: DEBUG
+    org.springframework.boot.context.config: DEBUG

@@ -1,0 +1,14 @@
+validar o log : 
+
+Hibernate: insert into saga_evento (created_at,erro,payload,status_destino,status_origem,tipo_evento,transaction_id) values (?,?,?,?,?,?,?)
+ok false
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Se o retorno "ok true"
+validar no "CreditoCommandListener" linha 29
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Se ocorreu tudo certo, seria essas linhas que precisa retornar 
+
+128	f9ca77c4-a4d8-47bb-89d7-4cc3262d3d7b	STATUS_ATUALIZADO	INICIADA	DEBITADA
+129	f9ca77c4-a4d8-47bb-89d7-4cc3262d3d7b	STATUS_ATUALIZADO	DEBITADA	EM_PROCESSAMENTO
+130	f9ca77c4-a4d8-47bb-89d7-4cc3262d3d7b	TRANSICAO_IGNORADA	EM_PROCESSAMENTO	CREDITADA

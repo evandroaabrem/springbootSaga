@@ -1,0 +1,6 @@
+1 Passo
+   - Startar o projeto https://github.com/evandroaabrem/springconfigserver
+
+
+2 - A configuração da base de dados estão no aws - security - secrets manager + https://github.com/evandroaabrem/springconfig
+  arquivo lp-dev.properties + secrets manager - > lp-dev
