@@ -1,0 +1,2 @@
+C:\evandro\projetos\springConfigServer 
+      mvn spring-boot:run
