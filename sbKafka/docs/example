@@ -1,0 +1,19 @@
+
+* CRUD
+
+1 - passo
+
+Leia e siga o arquivo /docs/copilot-guidelines.md.
+Crie o domain model User e o UserRepository.
+
+2 - passo,
+
+Leia e siga o arquivo /docs/copilot-guidelines.md.
+Crie o UserService usando o UserRepository.
+
+3 - passo
+
+Leia e siga o arquivo /docs/copilot-guidelines.md.
+Crie o UserController retornando apenas DTOs.
+
+
